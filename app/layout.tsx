@@ -3,7 +3,7 @@ import './global.css';
 
 export const metadata: Metadata = {
   title: 'KulkasAI',
-  description: 'Foto sisa bahan di kulkasmu, dapatkan resep instannya.',
+  description: 'Foto bahan masakan hari ini dan dapatkan resep instannya.',
 };
 
 export default function RootLayout({

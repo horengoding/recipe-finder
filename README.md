@@ -1,19 +1,13 @@
-# KulkasAI
+## Key Hightlights
 
-**KulkasAI** adalah aplikasi web interaktif yang membantu anak kos mengolah bahan makanan di kulkas menjadi hidangan lezat dan praktis. Cukup unggah foto bahan makanan yang kamu punya, dan AI akan menganalisis serta meracik rekomendasi resep secara instan!
-
----
-
-## Fitur Utama
-
-- **Analisis Foto Bahan Makanan:** Deteksi bahan otomatis menggunakan visi komputer dari Google Gemini AI (`gemini-3.6-flash`).
-- **Rekomendasi Resep Spesial Anak Kos:** Resep disesuaikan dengan peralatan masak sederhana (panci, wajan, atau *rice cooker*).
-- **Checklist Langkah Memasak:** Fitur interaktif untuk menandai langkah-langkah memasak yang sudah diselesaikan.
-- **Manajemen Resep Favorit:** Simpan resep favoritmu langsung di browser (*localStorage*) tanpa perlu repot buat akun.
+- **AI Photo Analysis:** Upload a photo of your food prep or fridge ingredients to instantly receive 5 creative recipes.
+- **Daily Usage Limit:** Managed via (*LocalStorage*) with daily limit and automatic date-based reset.
+- **Interactive Cooking Experience:** Features step-by-step cooking checklists.
+- **Unlimited Recipe Favorites:** Save as many favorite recipes as you like directly in your browser with zero limits.
 
 ## Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Framework:** [Next.js](https://nextjs.org/) 
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
 - **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
 - **AI Model:** [Google Gemini API](https://ai.google.dev/) (`gemini-3.6-flash`)
@@ -21,31 +15,31 @@
 
 ## Requirements
 
-- Node.js (versi 18 atau lebih baru)
+- Node.js 
 - NPM / Yarn / PNPM
 - Google Gemini API Key
 
-## Cara Menjalankan Proyek di Lokal
+## How To Run This Project
 
 1. Clone Repo
 ```bash
-git clone [https://github.com/horengoding/KulkasAI.git]
+git clone [https://github.com/horengoding/recipe-finder.git]
 ```
-2. Masuk ke folder project
+2. Enter the project folder
 ```bash
-cd Kulkas.ai
+cd recipe-finder
 ```
-3. Install dependensi
+3. Install dependencies
 ```bash
 npm install
 ```
-4. Konfigurasi Environment Variable
+4. Environment variable configuration
 ```bash
-GEMINI_API_KEY=api_key_gemini_kamu
+GEMINI_API_KEY=your_gemini_api_key
 ```
-5. Jalankan local server
+5. Run local server
 ```bash
 npm run dev
 ```
-6. Buka browser dan akses http://localhost:3000.
+6. Open http://localhost:3000 on browser.
 

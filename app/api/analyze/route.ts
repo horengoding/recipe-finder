@@ -31,8 +31,8 @@ export async function POST(req: Request) {
       [Request ID: ${randomSeed}]
       Analisis gambar bahan makanan ini.
 
-      SANGAT PENTING: Berikan 3 variasi resep yang BEDA, KREATIF, dan TIDAK MONOTON. Sertakan takaran bumbu yang sesuai.
-      Hindari memberikan resep pasaran yang terlalu standar. Cobalah memvariasikan gaya memasak (contoh: 1 menu tumis/gulai, 1 menu olahan goreng/krispi, dan 1 menu kreasi unik ala anak kos).
+      SANGAT PENTING: Berikan 5 variasi resep yang BEDA, KREATIF, dan TIDAK MONOTON. Sertakan takaran bumbu yang sesuai (hindari masakan pedas).
+      Hindari memberikan resep pasaran yang terlalu standar. Cobalah memvariasikan gaya memasak (contoh: masakan tumis, olahan goreng/krispi, masakan berkuah,kreasi rice cooker, dan masakan simpel unik ala anak kos).
 
       Kembalikan respons HANYA dalam bentuk JSON valid dengan format persis seperti ini:
       {

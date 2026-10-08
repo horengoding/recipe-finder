@@ -175,7 +175,21 @@ function MoonIcon({ className }: IconProps) {
   );
 }
 
-/* Ilustrasi kulkas clay: pengganti "ikon brand" sekaligus elemen utama di hero */
+function GithubIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
+      <path 
+        d="M12 2.5a9.5 9.5 0 0 0-3 18.52c.48.1.65-.21.65-.46v-1.7c-2.64.58-3.2-1.14-3.2-1.14-.43-1.1-1.06-1.4-1.06-1.4-.87-.6.07-.59.07-.59.96.07 1.47.99 1.47.99.85 1.47 2.24 1.05 2.78.8.09-.62.34-1.05.6-1.29-2.1-.24-4.32-1.06-4.32-4.7 0-1.04.37-1.89 .98-2.55-.1-.24-.42-1.22.1-2.54 0 0 .8-.26 2.62 .97a9 9 0 0 1 4.78 0c1.82-1.23 2.62-.97 2.62-.97.52 1.32.2 2.3.1 2.54.61.66.98 1.51.98 2.55 0 3.65-2.22 4.46-4.33 4.7.35.3.65.89.65 1.8v2.67c0 .25.17.57.66.46A9.5 9.5 0 0 0 12 2.5Z" />
+        fill="currentColor"
+        fillOpacity={0.16}
+        stroke="currentColor"
+        strokeWidth={1.6}
+        strokeLinejoin="round"
+    </svg>
+  );
+}
+
+
 function FridgeIllustration({ className, uid }: IconProps & { uid: string }) {
   return (
     <svg viewBox="0 0 120 140" className={className} aria-hidden="true">
@@ -213,12 +227,29 @@ export default function Home() {
   const [showOnlyFavorites, setShowOnlyFavorites] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
+  // Kuota analisis harian (maksimal 2x per hari), tersimpan di LocalStorage
+  const MAX_ANALYSIS = 2;
+  const [analysisCount, setAnalysisCount] = useState<number>(0);
+
+  const getTodayKey = () => new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     // Inisialisasi Favorit
     const saved = getStarredRecipes();
     setStarredIds(saved.map((r: Recipe) => r.id));
 
-    // Inisialisasi darkmode
+    const today = getTodayKey();
+    const savedDate = localStorage.getItem('kulkasai_analysis_date');
+    const savedCount = localStorage.getItem('kulkasai_analysis_count');
+
+    if (savedDate !== today) {
+      localStorage.setItem('kulkasai_analysis_date', today);
+      localStorage.setItem('kulkasai_analysis_count', '0');
+      setAnalysisCount(0);
+    } else if (savedCount) {
+      setAnalysisCount(parseInt(savedCount, 10));
+    }
+
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -262,6 +293,22 @@ export default function Home() {
   const handleAnalyze = async () => {
     if (!imageBase64) return;
 
+    const today = getTodayKey();
+    const savedDate = localStorage.getItem('kulkasai_analysis_date');
+    let currentCount = analysisCount;
+
+    if (savedDate !== today) {
+      currentCount = 0;
+      setAnalysisCount(0);
+      localStorage.setItem('kulkasai_analysis_date', today);
+      localStorage.setItem('kulkasai_analysis_count', '0');
+    }
+
+    if (currentCount >= MAX_ANALYSIS) {
+      setError('Kamu sudah mencapai batas penggunaan harian. Silakan kembali lagi besok!');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -278,9 +325,23 @@ export default function Home() {
         throw new Error(data.error || 'Gagal menganalisis gambar');
       }
 
-      setResult(data.result);
+      const sessionTag = Date.now().toString(36);
+      const resultWithUniqueIds: AnalysisResult = {
+        ...data.result,
+        recipes: (data.result.recipes || []).map((recipe: Recipe, idx: number) => ({
+          ...recipe,
+          id: `${sessionTag}-${idx}-${recipe.id ?? idx}`,
+        })),
+      };
+
+      setResult(resultWithUniqueIds);
+
+      const newCount = currentCount + 1;
+      setAnalysisCount(newCount);
+      localStorage.setItem('kulkasai_analysis_date', today);
+      localStorage.setItem('kulkasai_analysis_count', newCount.toString());
     } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan saat memproses gambar');
+      setError(err.message || 'Terjadi kesalahan saat memproses gambar. Kesempatan analisismu belum berkurang, silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -364,7 +425,7 @@ export default function Home() {
               Ada bahan apa saja di kulkasmu?
             </h1>
             <p className="mx-auto max-w-md text-base text-ink-soft">
-              Unggah foto bahan makanan yang tersisa, KulkasAI akan meracik resep lezat dan praktis secara instan.
+              Unggah foto bahan masakan dan bumbu yang tersedia, KulkasAI akan meracik resep untukmu.
             </p>
 
             <div className="flex flex-col items-center pt-2">
@@ -393,10 +454,12 @@ export default function Home() {
                 </div>
                 <button
                   onClick={handleAnalyze}
-                  disabled={loading}
-                  className="clay-peach clay-press flex w-full items-center justify-center gap-2.5 rounded-full py-4 font-display text-lg font-semibold disabled:opacity-60"
+                  disabled={loading || analysisCount >= MAX_ANALYSIS}
+                  className="clay-peach clay-press flex w-full items-center justify-center gap-2.5 rounded-full py-4 font-display text-lg font-semibold disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {loading ? (
+                  {analysisCount >= MAX_ANALYSIS ? (
+                    'Kuota Harian Habis'
+                  ) : loading ? (
                     <>
                       <SpinnerIcon className="h-5 w-5 animate-spin" /> Memproses Bahan...
                     </>
@@ -404,6 +467,13 @@ export default function Home() {
                     'Analisis & Cari Resep'
                   )}
                 </button>
+
+                <p className="clay-chip mx-auto flex w-fit items-center gap-1.5 bg-royal-soft px-4 py-1.5 text-xs font-bold text-royal-soft-ink">
+                  Sisa Kuota Hari Ini:
+                  <span className="text-peach-deep">
+                    {Math.max(0, MAX_ANALYSIS - analysisCount)} / {MAX_ANALYSIS}
+                  </span>
+                </p>
               </div>
             )}
           </section>
@@ -570,6 +640,16 @@ export default function Home() {
           </section>
         )}
       </main>
+
+      <footer className="mx-auto mt-14 max-w-4xl px-4">
+        <p className="clay-chip mx-auto flex w-fit items-center gap-1.5 bg-royal-soft px-4 py-1.5 text-xs font-semibold text-royal-soft-ink">
+            © {new Date().getFullYear()}
+            <span className="text-ink-soft">·</span>
+            <GithubIcon className="h-4 w-4" />
+            horengoding
+        </p>
+      </footer>
+
     </div>
   );
 }

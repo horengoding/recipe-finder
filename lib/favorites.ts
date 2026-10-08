@@ -34,6 +34,10 @@ export const saveFavoriteRecipe = (recipe: Recipe) => {
   if (!favorites.some((item) => item.id === recipe.id)) {
     favorites.push(recipe);
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    
+    console.log('Jumlah favorit:', getStarredRecipes().length); 
+  } else {
+    console.log('Resep sudah ada di favorit.');
   }
 };
 
