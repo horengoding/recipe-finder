@@ -2,6 +2,12 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ==========================================================================
+   PALET 60 - 30 - 10
+   60%  Dominan  : Cream / White  (#FDFBF7, #FFFFFF)   -> latar, kartu
+   30%  Sekunder : Imperial Blue  (#002395)            -> header, judul, tombol utama
+   10%  Aksen    : Peach / Orange (#FFC87A, #FFB042)   -> CTA, favorit, badge
+   ========================================================================== */
 :root {
   --cream: #FDFBF7;
   --surface: #FFFFFF;
@@ -27,6 +33,7 @@
   --danger-ink: #8A2A00;
   --focus: #002395;
 
+  /* bayangan clay */
   --clay-drop: rgba(0, 35, 149, 0.16);
   --clay-light: rgba(255, 255, 255, 1);
   --clay-inner-dark: rgba(0, 35, 149, 0.10);
@@ -103,6 +110,11 @@
   }
 }
 
+/* ==========================================================================
+   KOMPONEN CLAYMORPHISM
+   Semua ukuran bayangan diskalakan lewat --k (default 1),
+   jadi elemen kecil cukup memakai .clay-xs agar tidak terlihat "berlumpur".
+   ========================================================================== */
 @layer components {
   /* Kartu putih menggembung */
   .clay,
@@ -204,3 +216,13 @@
     }
   }
 }
+
+  .safe-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  /* Label pembungkus input tersembunyi di atas latar biru: ring fokus peach */
+  .on-blue .clay-field:has(:focus-visible) {
+    outline-color: var(--peach);
+  }
+
